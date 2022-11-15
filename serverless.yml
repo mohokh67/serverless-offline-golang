@@ -1,0 +1,53 @@
+service: serverless-offline-go
+
+frameworkVersion: ^3.22.0
+
+plugins:
+  - serverless-offline
+
+provider:
+  name: aws
+  runtime: go1.x
+  stage: local
+
+custom:
+    serverless-offline:
+        noPrependStageInUrl: true
+
+functions:
+  ping:
+    handler: bin/ping
+    package:
+      include:
+        - ./bin/ping
+    events:
+      - http:
+          path: /ping
+          method: get
+
+  blog-get:
+    handler: bin/blog-get
+    package:
+      include:
+        - ./bin/blog-get
+    events:
+      - http:
+          path: /blog/{name}
+          method: get
+          cors: true
+          request:
+            parameters:
+              paths:
+                name: true
+              querystrings:
+                active: true
+
+  blog-create:
+    handler: bin/blog-create
+    package:
+      include:
+        - ./bin/blog-create
+    events:
+      - http:
+          path: /blog
+          method: post
